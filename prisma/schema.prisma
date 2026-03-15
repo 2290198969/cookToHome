@@ -1,0 +1,163 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// 用户模型
+model User {
+  id           Int            @id @default(autoincrement())
+  name         String
+  phone        String         @unique
+  email        String?        @unique
+  password     String
+  avatar       String         @default("https://picsum.photos/200")
+  memberLevel  String         @default("普通会员")
+  favorites    Favorite?
+  orders       Order[]
+  chefRatings  ChefRating[]   // 与 ChefRating 的反向关联
+  menuRatings  MenuRating[]   // 与 MenuRating 的反向关联
+  createdAt    DateTime       @default(now()) @map("created_at")
+  updatedAt    DateTime       @updatedAt @map("updated_at")
+
+  @@map("users")
+}
+
+// 收藏模型
+model Favorite {
+  id        Int      @id @default(autoincrement())
+  userId    Int      @unique
+  chefIds   String
+  menuIds   String
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@map("favorites")
+}
+
+// 厨师模型
+model Chef {
+  id          Int            @id @default(autoincrement())
+  name        String
+  rating      Float          @default(0)
+  reviews     Int            @default(0)
+  specialties String
+  experience  String
+  bio         String
+  price       Float
+  image       String
+  isAvailable Boolean        @default(true)
+  services    String
+  ratings     ChefRating[]
+  menus       Menu[]
+  orders      Order[]
+  createdAt   DateTime       @default(now()) @map("created_at")
+  updatedAt   DateTime       @updatedAt @map("updated_at")
+
+  @@map("chefs")
+}
+
+// 厨师评价模型（修正外键约束）
+model ChefRating {
+  id        Int      @id @default(autoincrement())
+  chefId    Int
+  userId    Int
+  rating    Int      @db.SmallInt
+  comment   String?
+  date      DateTime @default(now())
+  chef      Chef     @relation(fields: [chefId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], map: "chef_rating_user_id_fkey") // 唯一约束名
+  userChefRatings User @relation("UserToChefRating", fields: [userId], references: [id])
+
+  @@unique([chefId, userId])
+  @@map("chef_ratings")
+}
+
+// 菜单模型
+model Menu {
+  id          Int            @id @default(autoincrement())
+  name        String
+  price       Float
+  image       String
+  rating      Float          @default(0)
+  reviews     Int            @default(0)
+  chefId      Int
+  chefName    String
+  chefImage   String
+  cuisine     String
+  description String
+  ingredients String
+  steps       String
+  ratings     MenuRating[]
+  orders      Order[]
+  chef        Chef           @relation(fields: [chefId], references: [id])
+  createdAt   DateTime       @default(now()) @map("created_at")
+  updatedAt   DateTime       @updatedAt @map("updated_at")
+
+  @@map("menus")
+}
+
+// 菜单评价模型（修正外键约束）
+model MenuRating {
+  id        Int      @id @default(autoincrement())
+  menuId    Int
+  userId    Int
+  username  String
+  rating    Int      @db.SmallInt
+  comment   String?
+  date      DateTime @default(now())
+  menu      Menu     @relation(fields: [menuId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], map: "menu_rating_user_id_fkey") // 唯一约束名
+  userMenuRatings User @relation("UserToMenuRating", fields: [userId], references: [id])
+
+  @@unique([menuId, userId])
+  @@map("menu_ratings")
+}
+
+// 订单模型
+model Order {
+  id              Int            @id @default(autoincrement())
+  orderNumber     String         @unique
+  userId          Int
+  chefId          Int
+  menuId          Int
+  chefName        String
+  chefImage       String
+  menuName        String
+  menuImage       String
+  date            String
+  time            String
+  guests          Int
+  price           Float
+  status          OrderStatus    @default(PENDING)
+  specialRequests String         @default("")
+  notes           String         @default("")
+  paymentStatus   PaymentStatus  @default(UNPAID)
+  paymentMethod   String         @default("")
+  recipient       String
+  phone           String
+  address         String
+  city            String
+  zipCode         String
+  user            User           @relation(fields: [userId], references: [id])
+  chef            Chef           @relation(fields: [chefId], references: [id])
+  menu            Menu           @relation(fields: [menuId], references: [id])
+  createdAt       DateTime       @default(now()) @map("created_at")
+  updatedAt       DateTime       @updatedAt @map("updated_at")
+
+  @@map("orders")
+}
+
+enum OrderStatus {
+  PENDING   @map("pending")
+  CONFIRMED @map("confirmed")
+  COMPLETED @map("completed")
+  CANCELLED @map("cancelled")
+}
+
+enum PaymentStatus {
+  UNPAID @map("unpaid")
+  PAID   @map("paid")
+}
