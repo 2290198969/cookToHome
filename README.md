@@ -1,39 +1,28 @@
-# cook
+# Chef到家 - 厨师上门服务平台
 
-This template should help get you started developing with Vue 3 in Vite.
+> 连接用户与厨师的到家做饭平台
 
-## Recommended IDE Setup
+## 📱 项目简介
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+用户可以浏览厨师、菜品，下单让厨师上门做饭；厨师可以入驻接单。
 
-## Type Support for `.vue` Imports in TS
+## ✨ 核心功能
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
+- 用户端：浏览厨师/菜品、下单、购物车、订单管理、个人中心
+- 厨师端：入驻申请、接单、菜品管理、收入管理
 
-## Customize configuration
+## 🛠️ 技术栈
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+- 前端：Vite + Vue 3
+- 后端：FastAPI (Python)
+- 数据库：PostgreSQL / MySQL
+- 缓存：Redis
 
-## Project Setup
+## 🚀 快速启动
 
-```sh
-bun install
-```
+```bash
+# 前端
+npm install
+npm run dev
 
-### Compile and Hot-Reload for Development
-
-```sh
-bun dev
-```
-
-### Type-Check, Compile and Minify for Production
-
-```sh
-bun run build
-```
-
-### Lint with [ESLint](https://eslint.org/)
-
-```sh
-bun lint
-```
+# 后端（待补充）
