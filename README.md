@@ -5,7 +5,7 @@
 ## 📱 项目简介
 
 用户可以浏览厨师、菜品，下单让厨师上门做饭；厨师可以入驻接单。
-<img width="931" height="1393" alt="image" src="https://github.com/user-attachments/assets/742452c3-5955-4c3c-948f-b1db36e17eba" />
+<img width="300" height="600" alt="image" src="https://github.com/user-attachments/assets/742452c3-5955-4c3c-948f-b1db36e17eba" />
 
 ## ✨ 核心功能
 
